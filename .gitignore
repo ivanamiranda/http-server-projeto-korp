@@ -1,0 +1,22 @@
+# Binários Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build Go
+server
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Grafana
+grafana-data/
