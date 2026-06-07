@@ -20,3 +20,5 @@ Thumbs.db
 
 # Grafana
 grafana-data/
+
+*.code-workspace
