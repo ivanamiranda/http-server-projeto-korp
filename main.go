@@ -21,8 +21,26 @@ var requestsTotal = prometheus.NewCounter(
 	},
 )
 
+var serviceUp = prometheus.NewGauge(
+	prometheus.GaugeOpts{
+		Name: "service_up",
+		Help: "Disponibilidade do servico",
+	},
+)
+
 func init() {
 	prometheus.MustRegister(requestsTotal)
+	prometheus.MustRegister(serviceUp)
+
+	serviceUp.Set(1)
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"status": "UP",
+	})
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -42,6 +60,7 @@ func main() {
 
 	http.HandleFunc("/projeto-korp", handler)
 
+	http.HandleFunc("/health", healthHandler)
 	// endpoint prometheus
 	http.Handle("/metrics", promhttp.Handler())
 

@@ -1,35 +1,113 @@
-# Projeto Korp
+# http-server-projeto-korp
 
-Desafio técnico desenvolvido para o processo seletivo da Korp.
+Projeto desenvolvido como parte do desafio técnico da Korp.
 
 ## Objetivo
 
-Desenvolver um serviço HTTP em Golang executando em containers Docker, utilizando NGINX como proxy reverso, Prometheus para coleta de métricas, Grafana para observabilidade e Ansible para automação da infraestrutura.
+Implementar um serviço HTTP em Golang executado em containers Docker, utilizando NGINX como proxy reverso, Prometheus para monitoramento, Grafana para visualização de métricas e Ansible para automação do provisionamento.
 
 ---
 
 ## Tecnologias Utilizadas
 
-- Golang
-- Docker
-- Docker Compose
-- NGINX
-- Prometheus
-- Grafana
-- Ansible
+* Golang
+* Docker
+* Docker Compose
+* NGINX
+* Prometheus
+* Grafana
+* Ansible
+
+---
+
+## Arquitetura
+
+Cliente
+
+↓
+
+NGINX (porta 80)
+
+↓
+
+http-server-projeto-korp (porta 8080)
+
+↓
+
+Prometheus (coleta métricas)
+
+↓
+
+Grafana (visualização)
+
+---
+
+## Funcionalidades
+
+### Endpoint principal
+
+GET `/projeto-korp`
+
+Exemplo de resposta:
+
+```json
+{
+  "nome": "Projeto Korp",
+  "horario": "2026-06-08T11:29:12Z"
+}
+```
+
+O campo `horario` é gerado dinamicamente em UTC a cada requisição.
+
+### Endpoint de Health Check
+
+GET `/health`
+
+Resposta:
+
+```json
+{
+  "status": "UP"
+}
+```
+
+### Endpoint de Métricas
+
+GET `/metrics`
+
+Métricas expostas no padrão Prometheus.
+
+---
+
+## Métricas Implementadas
+
+### Disponibilidade do Serviço
+
+```promql
+service_up
+```
+
+### Volume de Requisições
+
+```promql
+http_requests_total
+```
 
 ---
 
 ## Estrutura do Projeto
 
 ```text
-http-server-projeto-korp/
-│
-├── ansible/
-├── grafana/
-├── nginx/
-├── prometheus/
-│
+.
+├── ansible
+│   ├── inventory.ini
+│   └── playbook.yml
+├── grafana
+│   └── dashboard.json
+├── nginx
+│   └── http-server-projeto-korp.conf
+├── prometheus
+│   └── prometheus.yml
 ├── Dockerfile
 ├── docker-compose.yml
 ├── go.mod
@@ -40,78 +118,36 @@ http-server-projeto-korp/
 
 ---
 
-## Serviço HTTP
+## Executando com Docker Compose
 
-Endpoint:
-
-```http
-GET /projeto-korp
-```
-
-Resposta:
-
-```json
-{
-  "nome": "Projeto Korp",
-  "horario": "2026-06-07T04:00:00Z"
-}
-```
-
-O horário é gerado dinamicamente em UTC a cada requisição.
-
----
-
-## Arquitetura
-
-```text
-Cliente
-   │
-   ▼
-NGINX (porta 80)
-   │
-   ▼
-http-server-projeto-korp (porta 8080)
-   │
-   ├── /projeto-korp
-   └── /metrics
-          │
-          ▼
-     Prometheus
-          │
-          ▼
-       Grafana
-```
-
----
-
-## Como Executar
-
-### Build da aplicação
+### Build e inicialização
 
 ```bash
-docker build -t http-server-projeto-korp .
+docker compose up -d --build
 ```
 
-### Subir ambiente completo
+### Verificar containers
 
 ```bash
-docker compose up --build
+docker ps
 ```
 
----
-
-## Testes
-
-Consultar API:
+### Testar aplicação
 
 ```bash
 curl http://localhost/projeto-korp
 ```
 
-Consultar métricas:
+### Testar Health Check
 
 ```bash
-curl http://localhost:8080/metrics
+curl http://localhost/health
+```
+
+### Testar métricas
+
+```bash
+curl http://localhost/metrics
 ```
 
 ---
@@ -120,31 +156,21 @@ curl http://localhost:8080/metrics
 
 ### Prometheus
 
-Acesso:
+Acessar:
 
 ```text
 http://localhost:9090
 ```
 
-Métrica implementada:
-
-```text
-http_requests_total
-```
-
-Responsável por contabilizar todas as requisições recebidas pelo endpoint da aplicação.
-
----
-
 ### Grafana
 
-Acesso:
+Acessar:
 
 ```text
 http://localhost:3000
 ```
 
-Credenciais padrão:
+Login padrão:
 
 ```text
 Usuário: admin
@@ -153,53 +179,46 @@ Senha: admin
 
 Dashboard configurado para exibir:
 
-- Total de requisições
-- Disponibilidade do serviço
-
----
-
-## Containers
-
-### http-server-projeto-korp
-
-Serviço desenvolvido em Golang responsável por responder as requisições HTTP.
-
-### nginx
-
-Proxy reverso responsável por encaminhar as requisições da porta 80 para o serviço Golang na porta 8080.
-
-### prometheus
-
-Coleta métricas expostas pela aplicação.
-
-### grafana
-
-Visualização das métricas e dashboards.
+* Disponibilidade do serviço
+* Volume de requisições
 
 ---
 
 ## Automação com Ansible
 
-O ambiente pode ser provisionado automaticamente utilizando Ansible.
-
-Exemplo:
+Para provisionar o ambiente:
 
 ```bash
-ansible-playbook playbook.yml
+ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
 ```
 
 O playbook realiza:
 
-- Instalação do Docker
-- Criação da rede Docker
-- Build da imagem
-- Inicialização dos containers
-- Configuração do NGINX
-- Configuração do Prometheus
-- Validação da aplicação
+* Verificação do Docker
+* Criação da rede Docker
+* Build da aplicação
+* Inicialização dos containers
+* Configuração do proxy reverso
+* Inicialização do Prometheus
+* Inicialização do Grafana
+* Validação do endpoint HTTP
+* Exibição da resposta no terminal
 
 ---
 
-## Autor
+## Teste Esperado
 
-Ivana Miranda
+Após a execução do ambiente:
+
+```bash
+curl http://localhost/projeto-korp
+```
+
+Resposta esperada:
+
+```json
+{
+  "nome": "Projeto Korp",
+  "horario": "<horário UTC atual>"
+}
+```

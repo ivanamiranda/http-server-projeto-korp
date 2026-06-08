@@ -1,0 +1,56 @@
+---
+- name: Projeto Korp
+  hosts: localhost
+  connection: local
+
+  tasks:
+
+    - name: Verificar Docker
+      command: docker --version
+      register: docker_version
+
+    - name: Exibir versao do Docker
+      debug:
+        var: docker_version.stdout
+
+    - name: Criar rede Docker
+      community.docker.docker_network:
+        name: korp-network
+        state: present
+
+    - name: Build da aplicacao
+      command: docker compose build
+      args:
+        chdir: /mnt/c/Users/ivana/http-server-projeto-korp
+
+    - name: Subir containers
+      command: docker compose up -d
+      args:
+        chdir: /mnt/c/Users/ivana/http-server-projeto-korp
+
+    - name: Aguardar inicializacao
+      pause:
+        seconds: 10
+
+    - name: Testar endpoint
+      uri:
+        url: http://localhost/projeto-korp
+        method: GET
+        return_content: true
+      register: resposta
+
+    - name: Exibir resposta
+      debug:
+        var: resposta.json
+
+    - name: Testar healthcheck
+      uri:
+        url: http://localhost/health
+        method: GET
+        return_content: true
+      register: health_response
+
+    - name: Exibir healthcheck
+      debug:
+        var: health_response.json
+      
