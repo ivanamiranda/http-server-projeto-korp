@@ -21,12 +21,12 @@
     - name: Build da aplicacao
       command: docker compose build
       args:
-        chdir: /mnt/c/Users/ivana/http-server-projeto-korp
+        chdir: "{{ playbook_dir }}/.."
 
     - name: Subir containers
       command: docker compose up -d
       args:
-        chdir: /mnt/c/Users/ivana/http-server-projeto-korp
+        chdir: "{{ playbook_dir }}/.."
 
     - name: Aguardar inicializacao
       pause:

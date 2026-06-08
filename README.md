@@ -20,6 +20,27 @@ Implementar um serviço HTTP em Golang executado em containers Docker, utilizand
 
 ---
 
+## Pré-requisitos
+
+Antes de executar o projeto, é necessário possuir:
+
+- Docker
+- Docker Compose
+- Ansible
+
+Instale a collection utilizada pelo playbook:
+
+```bash
+ansible-galaxy collection install community.docker
+```
+
+Verifique a instalação:
+
+```bash
+ansible-galaxy collection list | grep community.docker
+```
+---
+
 ## Arquitetura
 
 Cliente
@@ -203,6 +224,14 @@ O playbook realiza:
 * Inicialização do Grafana
 * Validação do endpoint HTTP
 * Exibição da resposta no terminal
+
+O playbook utiliza a collection `community.docker` para gerenciamento da rede Docker.
+
+Executar:
+
+```bash
+ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+```
 
 ---
 
