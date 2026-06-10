@@ -257,7 +257,7 @@ Selecionar:
 
 Prometheus
 
-URL utilizada pelo datasource do Grafana:git 
+URL utilizada pelo datasource do Grafana:
 
 http://prometheus:9090
 
