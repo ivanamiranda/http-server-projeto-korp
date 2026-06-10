@@ -2,21 +2,21 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "ad4nrmb",
+    "name": "ad7hm5k",
     "namespace": "default",
-    "uid": "4514937f-83b5-498b-aee1-87dd445382ae",
-    "resourceVersion": "1780807123886999",
-    "generation": 4,
-    "creationTimestamp": "2026-06-07T04:37:17Z",
+    "uid": "444b6ae4-2a2a-43d6-8ba4-cbf1fe1cbbce",
+    "resourceVersion": "1781050858613008",
+    "generation": 3,
+    "creationTimestamp": "2026-06-10T00:19:30Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "831762664443904"
+      "grafana.app/deprecatedInternalID": "1854056255356928"
     },
     "annotations": {
-      "grafana.app/createdBy": "user:dfodt6dl222o0a",
+      "grafana.app/createdBy": "user:afonvmwllv11ca",
       "grafana.app/folder": "",
       "grafana.app/saved-from-ui": "Grafana v13.0.2 (3fcdbc5a)",
-      "grafana.app/updatedBy": "user:dfodt6dl222o0a",
-      "grafana.app/updatedTimestamp": "2026-06-07T04:38:43Z"
+      "grafana.app/updatedBy": "user:afonvmwllv11ca",
+      "grafana.app/updatedTimestamp": "2026-06-10T00:20:58Z"
     }
   },
   "spec": {
@@ -48,7 +48,7 @@
         "kind": "Panel",
         "spec": {
           "id": 1,
-          "title": "Up",
+          "title": "Disponibilidade do Serviço",
           "description": "",
           "links": [],
           "data": {
@@ -63,11 +63,11 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afodul9yzkx6od"
+                        "name": "afonwj6vliccge"
                       },
                       "spec": {
-                        "editorMode": "builder",
-                        "expr": "up",
+                        "editorMode": "code",
+                        "expr": "service_up",
                         "legendFormat": "__auto",
                         "range": true
                       }
@@ -105,6 +105,21 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "mappings": [
+                    {
+                      "type": "value",
+                      "options": {
+                        "0": {
+                          "text": "DOWN",
+                          "index": 1
+                        },
+                        "1": {
+                          "text": "UP",
+                          "index": 0
+                        }
+                      }
+                    }
+                  ],
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -119,7 +134,7 @@
                     ]
                   },
                   "color": {
-                    "mode": "thresholds"
+                    "mode": "palette-classic"
                   }
                 },
                 "overrides": []
@@ -132,7 +147,7 @@
         "kind": "Panel",
         "spec": {
           "id": 2,
-          "title": "Requests",
+          "title": "Total de Requisições",
           "description": "",
           "links": [],
           "data": {
@@ -147,10 +162,10 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afodul9yzkx6od"
+                        "name": "afonwj6vliccge"
                       },
                       "spec": {
-                        "editorMode": "builder",
+                        "editorMode": "code",
                         "expr": "http_requests_total",
                         "legendFormat": "__auto",
                         "range": true
@@ -270,7 +285,7 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "Projeto Korp Monitoramento",
+    "title": "Projeto Monitoramento Korp",
     "variables": [],
     "preferences": {
       "layout": {

@@ -44,23 +44,22 @@ ansible-galaxy collection list | grep community.docker
 ## Arquitetura
 
 Cliente
-
-↓
-
+   |
+   v
 NGINX (porta 80)
-
-↓
-
-http-server-projeto-korp (porta 8080)
-
-↓
-
-Prometheus (coleta métricas)
-
-↓
-
-Grafana (visualização)
-
+   |
+   v
+Aplicação Go (porta 8080)
+   |
+   +--> /health
+   |
+   +--> /metrics
+            |
+            v
+      Prometheus
+            |
+            v
+        Grafana
 ---
 
 ## Funcionalidades
@@ -81,6 +80,10 @@ Exemplo de resposta:
 O campo `horario` é gerado dinamicamente em UTC a cada requisição.
 
 ### Endpoint de Health Check
+
+O endpoint `/health` foi implementado para validação de disponibilidade da aplicação.
+
+Ele pode ser utilizado por ferramentas de monitoramento, balanceadores de carga ou automações para verificar se o serviço está operacional.
 
 GET `/health`
 
@@ -121,21 +124,37 @@ http_requests_total
 ```text
 .
 ├── ansible
-│   ├── inventory.ini
-│   └── playbook.yml
+├── docs
+│   ├── prometheus.png
+│   └── grafana.png
 ├── grafana
 │   └── dashboard.json
 ├── nginx
-│   └── http-server-projeto-korp.conf
 ├── prometheus
-│   └── prometheus.yml
 ├── Dockerfile
 ├── docker-compose.yml
-├── go.mod
-├── go.sum
 ├── main.go
 └── README.md
 ```
+
+---
+
+## Dockerfile
+
+A aplicação utiliza multi-stage build para reduzir o tamanho da imagem final.
+
+Etapas:
+
+1. Compilação da aplicação utilizando a imagem oficial do Golang.
+2. Geração do binário estático.
+3. Criação de uma imagem final baseada em Alpine Linux contendo apenas o binário da aplicação.
+
+Benefícios:
+
+- Imagem menor
+- Menor superfície de ataque
+- Build mais eficiente
+- Melhor prática para aplicações Go em containers
 
 ---
 
@@ -177,19 +196,39 @@ curl http://localhost/metrics
 
 ### Prometheus
 
-Acessar:
+Acesse:
 
-```text
 http://localhost:9090
-```
+
+Verifique os targets em:
+
+Status → Targets
+
+O serviço deve aparecer com status UP.
+
+Exemplo
+![Prometheus](./docs/prometheus.png)
 
 ### Grafana
+
+## Dashboard de Exemplo
+
+O projeto disponibiliza um dashboard exportado:
+
+```text
+grafana/dashboard.json
+```
+
+Para importar:
+
+- Dashboards → Import
+- Selecionar o arquivo `grafana/dashboard.json`
 
 Acessar:
 
 ```text
 http://localhost:3000
-```
+``
 
 Login padrão:
 
@@ -200,10 +239,47 @@ Senha: admin
 
 Dashboard configurado para exibir:
 
-* Disponibilidade do serviço
-* Volume de requisições
+Disponibilidade do serviço (service_up)
+Total de requisições (http_requests_total)
 
+Exemplo
+
+![Grafana](./docs/grafana.png)
+
+## Configuração do Grafana
+
+Após o primeiro acesso é necessário configurar o datasource do Prometheus.
+
+Menu:
+
+Connections → Data Sources
+
+Selecionar:
+
+Prometheus
+
+URL:
+
+http://prometheus:9090
+
+Salvar em:
+
+Save & Test
 ---
+
+## Queries Utilizadas
+
+Disponibilidade do serviço:
+
+```promql
+service_up
+```
+
+Total de requisições:
+
+```promql
+http_requests_total
+```
 
 ## Automação com Ansible
 
