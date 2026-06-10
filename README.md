@@ -43,6 +43,7 @@ ansible-galaxy collection list | grep community.docker
 
 ## Arquitetura
 
+```text
 Cliente
    |
    v
@@ -54,12 +55,13 @@ Aplicação Go (porta 8080)
    +--> /health
    |
    +--> /metrics
-            |
-            v
+           |
+           v
       Prometheus
-            |
-            v
+           |
+           v
         Grafana
+```
 ---
 
 ## Funcionalidades
@@ -206,12 +208,13 @@ Status → Targets
 
 O serviço deve aparecer com status UP.
 
-Exemplo
+Exemplo:
+
 ![Prometheus](./docs/prometheus.png)
 
-### Grafana
+## Grafana
 
-## Dashboard de Exemplo
+### Dashboard de Exemplo
 
 O projeto disponibiliza um dashboard exportado:
 
@@ -242,10 +245,6 @@ Dashboard configurado para exibir:
 Disponibilidade do serviço (service_up)
 Total de requisições (http_requests_total)
 
-Exemplo
-
-![Grafana](./docs/grafana.png)
-
 ## Configuração do Grafana
 
 Após o primeiro acesso é necessário configurar o datasource do Prometheus.
@@ -258,13 +257,18 @@ Selecionar:
 
 Prometheus
 
-URL:
+URL utilizada pelo datasource do Grafana:git 
 
 http://prometheus:9090
 
 Salvar em:
 
 Save & Test
+
+Exemplo:
+
+![Grafana](./docs/grafana.png)
+
 ---
 
 ## Queries Utilizadas
