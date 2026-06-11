@@ -63,11 +63,11 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afonwj6vliccge"
+                        "name": "Prometheus"
                       },
                       "spec": {
                         "editorMode": "code",
-                        "expr": "service_up",
+                        "expr": "up{job=\"http-server-projeto-korp\"}",
                         "legendFormat": "__auto",
                         "range": true
                       }
@@ -162,7 +162,7 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afonwj6vliccge"
+                        "name": "Prometheus"
                       },
                       "spec": {
                         "editorMode": "code",
@@ -269,7 +269,7 @@
       "timezone": "browser",
       "from": "now-6h",
       "to": "now",
-      "autoRefresh": "",
+      "autoRefresh": "10s",
       "autoRefreshIntervals": [
         "5s",
         "10s",
